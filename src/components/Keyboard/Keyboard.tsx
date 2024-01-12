@@ -236,8 +236,17 @@ const Keyboard = () => {
                 })
               }}
               keyboardShortcuts={keyboardShortcuts}
-              renderNoteLabel={({ midiNumber }: { midiNumber: number }) => (
-                <p className='ReactPiano__NoteLabel'>
+              renderNoteLabel={({
+                midiNumber,
+                isAccidental,
+              }: {
+                midiNumber: number
+                isAccidental: boolean
+              }) => (
+                <p
+                  className='ReactPiano__NoteLabel'
+                  style={{ color: isAccidental ? 'white' : 'black' }}
+                >
                   {t(
                     swapNoteWithSynonym(
                       MidiNumbers.getAttributes(midiNumber).note.replace(

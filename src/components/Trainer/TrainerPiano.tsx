@@ -17,10 +17,16 @@ const PianoContainer = styled.div`
   height: 35vh;
 `
 
-const InKeyMarker = styled.div`
+interface InKeyMarkerProps {
+  isSmall?: boolean
+}
+
+const InKeyMarker = styled.div<InKeyMarkerProps>`
   border-radius: 50%;
-  width: 2em;
-  height: 2em;
+  width: ${(p) => (p.isSmall ? '2.4vw' : '4vw')};
+  height: ${(p) => (p.isSmall ? '2.4vw' : '4vw')};
+  max-width: 30px;
+  max-height: 30px;
   background-color: #acddec;
   display: flex;
   justify-content: center;
@@ -97,12 +103,20 @@ const TrainerPiano = () => {
         onPlayNoteInput={() => {}}
         onStopNoteInput={() => {}}
         keyWidthToHeight={0.33}
-        renderNoteLabel={({ midiNumber }: { midiNumber: number }) => {
+        renderNoteLabel={({
+          midiNumber,
+          isAccidental,
+        }: {
+          midiNumber: number
+          isAccidental: boolean
+        }) => {
           const isMidiNumbers = false
           // modScale will be the midi numbers in-scale starting from c0
           const modScale = ignoreOctave(scale || { keys: {} })
           if (isMidiNumbers) {
-            return <InKeyMarker>{midiNumber}</InKeyMarker>
+            return (
+              <InKeyMarker isSmall={isAccidental}>{midiNumber}</InKeyMarker>
+            )
           } else {
             if (isHardModeEnabled) {
               // only add the roman numeral if it's the first note in the scale
@@ -111,7 +125,9 @@ const TrainerPiano = () => {
               )
               if (midiNumber % OCTAVE_LENGTH === noOctaveFirstNoteInScale) {
                 return (
-                  <InKeyMarker>{Object.values(modScale[0])[0]}</InKeyMarker>
+                  <InKeyMarker isSmall={isAccidental}>
+                    {Object.values(modScale[0])[0]}
+                  </InKeyMarker>
                 )
               }
             } else {
@@ -124,7 +140,7 @@ const TrainerPiano = () => {
               // if it is, display the roman numeral
               if (modKeyIdx > -1) {
                 return (
-                  <InKeyMarker>
+                  <InKeyMarker isSmall={isAccidental}>
                     {t(
                       `piano.numeral.${
                         Object.values(modScale[modKeyIdx] || {})?.[0]
