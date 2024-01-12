@@ -12,8 +12,10 @@ import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import ArrowLeftRightIcon from 'remixicon-react/ArrowLeftRightFillIcon'
 import SkullIcon from 'remixicon-react/SkullFillIcon'
 import QuizIcon from 'remixicon-react/SurveyFillIcon'
+import ShuffleIcon from 'remixicon-react/ShuffleFillIcon'
 import { SidebarContext } from '../SidebarProvider'
 import { useTranslation } from 'react-i18next'
+import { Tooltip } from 'react-tooltip'
 
 const TrainerDisplayContainer = styled.div`
   display: flex;
@@ -62,6 +64,8 @@ const TrainerDisplay = () => {
     setIsScalePingPong,
     isHardModeEnabled,
     setIsHardModeEnabled,
+    isShuffleModeEnabled,
+    setIsShuffleModeEnabled,
   } = useContext(TrainerContext)
   const { setIsOpen } = useContext(SidebarContext)
   const { t } = useTranslation()
@@ -92,19 +96,36 @@ const TrainerDisplay = () => {
         <TrainerSectionHeader>
           <h2>{t('pages.practice.scale.title')}</h2>
           <IconContainer
-            title={t('pages.practice.scale.pingPongHint')}
+            id='ping-pong-hint'
             onClick={() => setIsScalePingPong?.((isPingPong) => !isPingPong)}
           >
             <ArrowLeftRightIcon
               color={isScalePingPong ? '#70bcd3' : '#1f1f20'}
             />
           </IconContainer>
+          <Tooltip anchorSelect='#ping-pong-hint'>
+            {t('pages.practice.scale.pingPongHint')}
+          </Tooltip>
+
           <IconContainer
-            title={t('pages.practice.scale.hardModeHint')}
+            id='hard-mode-hint'
             onClick={() => setIsHardModeEnabled?.((isHard) => !isHard)}
           >
             <SkullIcon color={isHardModeEnabled ? '#70bcd3' : '#1f1f20'} />
           </IconContainer>
+          <Tooltip anchorSelect='#hard-mode-hint'>
+            {t('pages.practice.scale.hardModeHint')}
+          </Tooltip>
+
+          <IconContainer
+            id='shuffle-mode-hint'
+            onClick={() => setIsShuffleModeEnabled?.((isOn) => !isOn)}
+          >
+            <ShuffleIcon color={isShuffleModeEnabled ? '#70bcd3' : '#1f1f20'} />
+          </IconContainer>
+          <Tooltip anchorSelect='#shuffle-mode-hint'>
+            {t('pages.practice.scale.shuffleModeHint')}
+          </Tooltip>
         </TrainerSectionHeader>
         <Select
           filterOption={fromStartFilter}
@@ -128,17 +149,21 @@ const TrainerDisplay = () => {
         <TrainerSectionHeader>
           <h2>{t('pages.practice.mode.title')}</h2>
           <IconContainer
-            title={t('pages.practice.mode.quizModeHint')}
+            id='quiz-mode-hint'
             onClick={() => setCurrentScreen?.('quiz')}
           >
             <QuizIcon color='#1f1f20' />
           </IconContainer>
-          <IconContainer
-            title={t('pages.practice.mode.settingsHint')}
-            onClick={() => setIsOpen?.(true)}
-          >
+          <Tooltip anchorSelect='#quiz-mode-hint'>
+            {t('pages.practice.mode.quizModeHint')}
+          </Tooltip>
+
+          <IconContainer id='settings-hint' onClick={() => setIsOpen?.(true)}>
             <SettingsIcon color='#1f1f20' />
           </IconContainer>
+          <Tooltip anchorSelect='#settings-hint'>
+            {t('pages.practice.mode.settingsHint')}
+          </Tooltip>
         </TrainerSectionHeader>
         <Select
           value={{

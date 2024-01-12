@@ -43,6 +43,8 @@ type TrainerContextType = {
   setIsScalePingPong?: Dispatch<SetStateAction<boolean>>
   isHardModeEnabled?: boolean
   setIsHardModeEnabled?: Dispatch<SetStateAction<boolean>>
+  isShuffleModeEnabled?: boolean
+  setIsShuffleModeEnabled?: Dispatch<SetStateAction<boolean>>
 }
 
 export const TrainerContext = createContext({} as TrainerContextType)
@@ -62,6 +64,7 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
     useState<AvailableScreensType>('practice')
   const [isScalePingPong, setIsScalePingPong] = useState(false)
   const [isHardModeEnabled, setIsHardModeEnabled] = useState(false)
+  const [isShuffleModeEnabled, setIsShuffleModeEnabled] = useState(false)
 
   const [_isGoingDown, _setIsGoingDown] = useState(false)
 
@@ -80,6 +83,8 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
     setIsScalePingPong,
     isHardModeEnabled,
     setIsHardModeEnabled,
+    isShuffleModeEnabled,
+    setIsShuffleModeEnabled,
   }
 
   useEffect(() => {

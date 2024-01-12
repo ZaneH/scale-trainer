@@ -119,6 +119,7 @@ const en = {
         title: 'Scale',
         pingPongHint: 'Toggle ping-pong scale practice',
         hardModeHint: 'Toggle hard mode',
+        shuffleModeHint: 'Toggle shuffle mode',
       },
       mode: {
         title: 'Mode',
