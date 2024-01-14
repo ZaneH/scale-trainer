@@ -87,6 +87,14 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
     setIsShuffleModeEnabled,
   }
 
+  const randomizeScale = () => {
+    const randomScaleIdx = Math.floor(
+      Math.random() * Object.keys(AVAILABLE_SCALES).length
+    )
+    const randomScale = Object.values(AVAILABLE_SCALES)[randomScaleIdx]
+    setScale(randomScale)
+  }
+
   useEffect(() => {
     const prevNote = noteTracker.currentMidiNumber
     const scaleStartMidiNumber = Number(Object.keys(scale.keys)[0])
@@ -96,9 +104,15 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
     )
 
     if (isScalePingPong && _isGoingDown) {
+      // determine if we're at the end of the ping pong
       if (noteTracker.currentMidiNumber === scaleStartMidiNumber) {
         _setIsGoingDown(false)
+
+        if (isShuffleModeEnabled) {
+          randomizeScale()
+        }
       } else {
+        // otherwise, keep going down the scale
         setNoteTracker((nt) => ({
           ...nt,
           prevNote,
@@ -106,16 +120,25 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
         }))
       }
     } else {
+      // determine if we're at the end of the scale (going up)
       if (noteTracker.currentMidiNumber === scaleEndMidiNumber) {
         _setIsGoingDown(true)
+
         if (!isScalePingPong) {
+          // if we're not ping ponging, reset to the beginning of the scale
+          // prevNote is our hint for the next note, it depends on hard mode
           setNoteTracker((nt) => ({
             ...nt,
             prevNote: isHardModeEnabled ? scaleStartMidiNumber : prevNote,
             nextTargetMidiNumber: scaleStartMidiNumber,
           }))
         }
+
+        if (isShuffleModeEnabled) {
+          randomizeScale()
+        }
       } else {
+        // otherwise, keep going up the scale
         setNoteTracker((nt) => ({
           ...nt,
           prevNote: noteTracker.currentMidiNumber,
@@ -133,9 +156,11 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
     noteTracker.nextTargetMidiNumber,
     scale.keys,
     isHardModeEnabled,
+    isShuffleModeEnabled,
   ])
 
   useEffect(() => {
+    // if certain settings change, reset the note tracker
     setNoteTracker((nt) => ({
       ...nt,
       noteCounter: 0,
@@ -143,7 +168,14 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
       currentMidiNumber: Number(Object.keys(scale.keys)[0]),
       prevNote: Number(Object.keys(scale.keys)[0]),
     }))
-  }, [scale, isScalePingPong, currentScreen, practiceMode, isHardModeEnabled])
+  }, [
+    scale,
+    isScalePingPong,
+    currentScreen,
+    practiceMode,
+    isHardModeEnabled,
+    isShuffleModeEnabled,
+  ])
 
   return (
     <TrainerContext.Provider value={context}>
